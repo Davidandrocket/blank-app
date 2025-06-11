@@ -38,24 +38,26 @@ with col_seed:
     if st.button("Random Seed"):
         st.session_state.seed_action = ("randomize", None)
 
-if st.button("Randomize All Settings"):
-        st.session_state.seed = random.randint(0, 10000)
-        st.session_state.grid_x = random.randint(2, 8)
-        st.session_state.grid_y = random.randint(2, 8)
-        st.session_state.falloff_power = round(random.uniform(0.2, 3.0), 1)
-        min_thresh = round(random.uniform(0.0, 0.9), 2)
-        max_thresh = round(random.uniform(min_thresh + 0.01, 1.0), 2)
-        st.session_state.thresh_min = min_thresh
-        st.session_state.thresh_max = max_thresh
-        st.session_state.interp_mode = random.choice(["Linear", "Smoothstep"])
-        st.session_state.palette = [
-            "#%06x" % random.randint(0, 0xFFFFFF) for _ in range(random.randint(2, 8))
-        ]
-        st.rerun()
-        try:
-            st.session_state.seed = int(seed_input)
-        except ValueError:
-            pass
+if st.button("Randomize Settings"):
+    st.session_state.seed = random.randint(0, 10000)
+    st.session_state.grid_x = random.randint(2, 10)
+    st.session_state.grid_y = random.randint(2, 10)
+    min_thresh = round(random.uniform(0.0, 0.9), 2)
+    max_thresh = round(random.uniform(min_thresh + 0.01, 1.0), 2)
+    st.session_state.falloff_power = round(random.uniform(0.2, max_thresh * 3.0), 2)
+    st.session_state.thresh_min = min_thresh
+    st.session_state.thresh_max = max_thresh
+    st.session_state.interp_mode = random.choice(["Linear", "Smoothstep"])
+    st.rerun()
+    try:
+        st.session_state.seed = int(seed_input)
+    except ValueError:
+        pass
+
+if st.button("Randomize Palette"):
+    st.session_state.palette = [
+        "#%06x" % random.randint(0, 0xFFFFFF) for _ in range(random.randint(2, 8))
+    ]
 
 # --- Noise Settings ---
 col1, col2 = st.columns(2)
