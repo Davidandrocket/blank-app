@@ -12,7 +12,7 @@ st.title("16x Perlin Noise Generator")
 
 # --- Initialization ---
 if 'palette' not in st.session_state:
-    st.session_state.palette = ["#ffe5b4", "#f1d3a2", "#e3c290", "#d5b07e", "#c89f6d"]
+    st.session_state.palette = ["#ffffff", "#bfbfbf", "#bfbfbf", "#bfbfbf", "#000000"]
 if 'seed' not in st.session_state:
     st.session_state.seed = random.randint(0, 10000)
 
