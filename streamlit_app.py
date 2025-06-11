@@ -16,6 +16,8 @@ if 'palette' not in st.session_state:
     st.session_state.palette = ["#ffffff", "#bfbfbf", "#7f7f7f", "#3f3f3f", "#000000"]
 if 'seed' not in st.session_state:
     st.session_state.seed = random.randint(0, 10000)
+if 'palette_action' not in st.session_state:
+    st.session_state.palette_action = None
 
 # --- Display Controls ---
 st.subheader("Preview")
@@ -25,8 +27,7 @@ with col_seed:
     st.session_state.show_tiled = st.checkbox("Show Tiled (3x3)", value=st.session_state.get("show_tiled", False))
     seed_input = st.text_input("Seed", value=str(st.session_state.seed))
     if st.button("Random Seed"):
-        st.session_state.seed = random.randint(0, 10000)
-        st.rerun()
+        st.session_state.seed_action = ("randomize", None)
     try:
         st.session_state.seed = int(seed_input)
     except ValueError:
@@ -47,35 +48,47 @@ with col1:
 
 with col2:
     st.header("Color Palette")
-    palette = st.session_state.palette.copy()
-    reorder_index = None
+    palette = st.session_state.palette
+    updated_palette = palette[:]
 
     for i in range(len(palette)):
-        cols = st.columns([3, 1, 1])
-        palette[i] = cols[0].color_picker(f"Color {i+1}", palette[i], label_visibility="collapsed")
+        cols = st.columns([3, 1, 1, 1])
+        updated_palette[i] = cols[0].color_picker(f"Color {i+1}", palette[i], label_visibility="collapsed")
 
-        if cols[1].button("↑", key=f"up_{i}") and i > 0:
-            palette[i-1], palette[i] = palette[i], palette[i-1]
-            st.session_state.palette = palette
-            st.rerun()
-
-        if cols[1].button("↓", key=f"down_{i}") and i < len(palette) - 1:
-            palette[i], palette[i+1] = palette[i+1], palette[i]
-            st.session_state.palette = palette
-            st.rerun()
-
+        if cols[1].button("↑", key=f"move_up_{i}") and i > 0:
+            st.session_state.palette_action = ("move_up", i)
+        if cols[1].button("↓", key=f"move_down_{i}") and i < len(palette) - 1:
+            st.session_state.palette_action = ("move_down", i)
         if cols[2].button("✕", key=f"remove_{i}") and len(palette) > 1:
-            palette.pop(i)
-            st.session_state.palette = palette
-            st.rerun()
-            break
+            st.session_state.palette_action = ("remove", i)
 
     if st.button("Add Color"):
-        palette.append("#ffffff")
-        st.session_state.palette = palette
-        st.rerun()
+        st.session_state.palette_action = ("add", None)
 
-    st.session_state.palette = palette
+    # Apply the palette action once per run
+    action = st.session_state.palette_action
+    if action:
+        cmd, idx = action
+        if cmd == "move_up" and idx > 0:
+            updated_palette[idx], updated_palette[idx - 1] = updated_palette[idx - 1], updated_palette[idx]
+        elif cmd == "move_down" and idx < len(updated_palette) - 1:
+            updated_palette[idx], updated_palette[idx + 1] = updated_palette[idx + 1], updated_palette[idx]
+        elif cmd == "remove" and len(updated_palette) > 1:
+            updated_palette.pop(idx)
+        elif cmd == "add":
+            updated_palette.append("#ffffff")
+        st.session_state.palette = updated_palette
+        st.session_state.palette_action = None
+        st.rerun()
+    else:
+        st.session_state.palette = updated_palette
+
+# --- Apply Seed Action ---
+if st.session_state.get("seed_action"):
+    cmd, _ = st.session_state.seed_action
+    if cmd == "randomize":
+        st.session_state.seed = random.randint(0, 10000)
+    st.session_state.seed_action = None
 
 # --- Noise Generation ---
 rng = np.random.default_rng(st.session_state.seed)
