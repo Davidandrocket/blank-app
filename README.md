@@ -1,19 +1,5 @@
-# 🎈 Blank app template
+# 16x Perlin Noise Generator
 
-A Perlin Noise Generator designed for 16x16 spites
+A customizable 16x Perlin noise texture generator with color palette editing, tiling preview, and image export.
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://blank-app-template.streamlit.app/)
-
-### How to run it on your own machine
-
-1. Install the requirements
-
-   ```
-   $ pip install -r requirements.txt
-   ```
-
-2. Run the app
-
-   ```
-   $ streamlit run streamlit_app.py
-   ```
+Try it live 👉 [https://mcperlin.streamlit.app/](https://mcperlin.streamlit.app/)
