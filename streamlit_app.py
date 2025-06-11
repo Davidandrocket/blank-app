@@ -9,6 +9,7 @@ WIDTH, HEIGHT = 16, 16
 
 st.set_page_config(page_title="Perlin Noise Generator", layout="wide")
 st.title("16x Perlin Noise Generator")
+st.text("By DavidandRocket")
 
 # --- Initialization ---
 if 'palette' not in st.session_state:
