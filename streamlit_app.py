@@ -12,6 +12,15 @@ st.title("16x Perlin Noise Generator")
 st.text("By DavidandRocket")
 
 # --- Initialization ---
+if 'initialized' not in st.session_state:
+    st.session_state.initialized = True
+    st.session_state.scale = 1
+    st.session_state.grid_x = 5
+    st.session_state.grid_y = 5
+    st.session_state.falloff_power = 1.0
+    st.session_state.thresh_min = 0.0
+    st.session_state.thresh_max = 1.0
+    st.session_state.interp_mode = "Linear"
 if 'palette' not in st.session_state:
     st.session_state.palette = ["#ffffff", "#bfbfbf", "#7f7f7f", "#3f3f3f", "#000000"]
 if 'seed' not in st.session_state:
@@ -28,23 +37,38 @@ with col_seed:
     seed_input = st.text_input("Seed", value=str(st.session_state.seed))
     if st.button("Random Seed"):
         st.session_state.seed_action = ("randomize", None)
-    try:
-        st.session_state.seed = int(seed_input)
-    except ValueError:
-        pass
+
+if st.button("Randomize All Settings"):
+        st.session_state.seed = random.randint(0, 10000)
+        st.session_state.grid_x = random.randint(2, 8)
+        st.session_state.grid_y = random.randint(2, 8)
+        st.session_state.falloff_power = round(random.uniform(0.2, 3.0), 1)
+        min_thresh = round(random.uniform(0.0, 0.9), 2)
+        max_thresh = round(random.uniform(min_thresh + 0.01, 1.0), 2)
+        st.session_state.thresh_min = min_thresh
+        st.session_state.thresh_max = max_thresh
+        st.session_state.interp_mode = random.choice(["Linear", "Smoothstep"])
+        st.session_state.palette = [
+            "#%06x" % random.randint(0, 0xFFFFFF) for _ in range(random.randint(2, 8))
+        ]
+        st.rerun()
+        try:
+            st.session_state.seed = int(seed_input)
+        except ValueError:
+            pass
 
 # --- Noise Settings ---
 col1, col2 = st.columns(2)
 
 with col1:
     st.header("Noise Settings")
-    scale = st.slider("Scale", 1, 16, 1)
-    grid_x = st.slider("Grid Size X", 2, 32, 5)
-    grid_y = st.slider("Grid Size Y", 2, 32, 5)
-    falloff_power = st.slider("Falloff Power", 0.2, 3.0, 1.0, 0.1)
-    thresh_min = st.slider("Min Threshold", 0.0, 1.0, 0.0, 0.01)
-    thresh_max = st.slider("Max Threshold", 0.0, 1.0, 1.0, 0.01)
-    interp_mode = st.selectbox("Interpolation Mode", ["Linear", "Smoothstep"])
+    scale = st.slider("Scale", 1, 16, key="scale")
+    grid_x = st.slider("Grid Size X", 2, 32, key="grid_x")
+    grid_y = st.slider("Grid Size Y", 2, 32, key="grid_y")
+    falloff_power = st.slider("Falloff Power", 0.2, 3.0, key="falloff_power", step=0.1)
+    thresh_min = st.slider("Min Threshold", 0.0, 1.0, key="thresh_min", step=0.01)
+    thresh_max = st.slider("Max Threshold", 0.0, 1.0, key="thresh_max", step=0.01)
+    interp_mode = st.selectbox("Interpolation Mode", ["Linear", "Smoothstep"], key="interp_mode")
 
 with col2:
     st.header("Color Palette")
