@@ -5,7 +5,10 @@ import random
 import json
 import io
 
-WIDTH, HEIGHT = 16, 16
+# Delay width/height setting until after image resolution widgets
+# to avoid NameError
+WIDTH = None
+HEIGHT = None
 
 st.set_page_config(page_title="Perlin Noise Generator", layout="wide")
 st.title("16x Perlin Noise Generator")
@@ -58,6 +61,13 @@ with col_seed:
         st.session_state.palette = [
             "#%06x" % random.randint(0, 0xFFFFFF) for _ in range(random.randint(2, 8))
         ]
+
+# --- Image Settings ---
+st.header("Image Settings")
+image_width = st.number_input("Image Width (px)", min_value=4, max_value=256, value=16, step=1, key="image_width")
+image_height = st.number_input("Image Height (px)", min_value=4, max_value=256, value=16, step=1, key="image_height")
+WIDTH = image_width
+HEIGHT = image_height
 
 # --- Noise Settings ---
 col1, col2 = st.columns(2)
