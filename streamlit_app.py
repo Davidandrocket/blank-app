@@ -24,7 +24,7 @@ if 'initialized' not in st.session_state:
 if 'palette' not in st.session_state:
     st.session_state.palette = ["#ffffff", "#bfbfbf", "#7f7f7f", "#3f3f3f", "#000000"]
 if 'seed' not in st.session_state:
-    st.session_state.seed = 6969
+    st.session_state.seed = random.randint(0, 10000)
 if 'palette_action' not in st.session_state:
     st.session_state.palette_action = None
 
