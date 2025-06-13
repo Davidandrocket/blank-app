@@ -37,7 +37,7 @@ col_display, col_seed = st.columns([3, 1])
 
 with col_seed:
     st.session_state.show_tiled = st.checkbox("Show Tiled (3x3)", value=st.session_state.get("show_tiled", False))
-    seed_input = st.text_input("Seed", value=str(st.session_state.seed))
+    st.text_input("Seed", key="seed")
     if st.button("Random Seed"):
         st.session_state.seed_action = ("randomize", None)
 
